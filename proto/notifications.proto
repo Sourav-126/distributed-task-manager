@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package task_manager.notification;
+
+option go_package = "github.com/Sourav-126/distributed-task-manager/pb/notification";
+
+import "common.proto";
+
+service NotificationService {
+  rpc SendNotification(SendNotificationRequest) returns (task_manager.common.Response);
+  rpc PostToNoticeBoard(NoticeRequest)          returns (NoticeResponse);
+  rpc WatchNoticeBoard(WatchRequest)            returns (stream NoticeEvent);
+  rpc GetMyNotifications(GetNotifRequest)       returns (stream Notification);
+}
+
+enum Event {
+  CREATED   = 0;
+  UPDATED   = 1;
+  DELETED   = 2;
+  ASSIGNED  = 3;
+  CONCERNED = 4;
+  MENTIONED = 5;
+  DEADLINE  = 6;
+}
+
+message Notification {
+  string task_id   = 1;
+  string user_id   = 2;
+  Event  event     = 3;
+  string message   = 4;
+  bool   seen      = 5;
+  string timestamp = 6;
+}
+
+message SendNotificationRequest {
+  Notification notification = 1;
+}
+
+message NoticeRequest {
+  string posted_by = 1;
+  string title     = 2;
+  string body      = 3;
+}
+
+message NoticeResponse {
+  task_manager.common.Response response = 1;
+  string notice_id                      = 2;
+}
+
+message NoticeEvent {
+  string notice_id = 1;
+  string posted_by = 2;
+  string title     = 3;
+  string body      = 4;
+  string timestamp = 5;
+}
+
+message WatchRequest    { string user_id = 1; }
+message GetNotifRequest { string user_id = 1; }

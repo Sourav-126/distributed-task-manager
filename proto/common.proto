@@ -1,0 +1,29 @@
+syntax = "proto3";
+package task_manager.common;
+option go_package = "./pb/common";
+
+message Response {
+  bool   success = 1;
+  string message = 2;
+}
+
+enum Role {
+  ADMIN     = 0;
+  MANAGER   = 1;
+  MENTOR    = 2;
+  TEAM_LEAD = 3;
+  TEAM      = 4;
+}
+
+enum Priority {
+  LOW      = 0;
+  MEDIUM   = 1;
+  HIGH     = 2;
+  CRITICAL = 3;
+}
+
+enum TaskStatus {
+  TODO        = 0;
+  IN_PROGRESS = 1;
+  DONE        = 2;
+}
