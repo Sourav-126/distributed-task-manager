@@ -12,6 +12,7 @@ import (
 	"github.com/redis/go-redis/v9"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
+	pb "session/github.com/Sourav-126/distributed-task-manager/pb/task"
 )
 
 func Signin(db *gorm.DB, rdb *redis.Client) fiber.Handler {
@@ -143,5 +144,55 @@ func GetProfile(db *gorm.DB) fiber.Handler {
 			"id":    user.ID,
 			"email": user.Email,
 		})
+	}
+}
+
+func Health() fiber.Handler {
+	return func(c fiber.Ctx) error {
+
+		return c.JSON(fiber.Map{
+			"message": "up like you dick!",
+		})
+	}
+}
+
+// ForwardRequest is now a function that accepts the client and returns a Fiber Handler
+func ForwardRequest(svc *GrpcServiceClient) fiber.Handler {
+	return func(c fiber.Ctx) error {
+		// Create a standard struct to parse the incoming JSON (flat structure)
+		var payload struct {
+			Title       string `json:"title"`
+			Description string `json:"description"`
+			Priority    int32  `json:"priority"`
+			Difficulty  int32  `json:"difficulty"`
+		}
+
+		if err := c.Bind().JSON(&payload); err != nil {
+			return c.Status(400).SendString("Invalid Request format: " + err.Error())
+		}
+
+		if payload.Title == "" && payload.Description == "" {
+			return c.Status(400).SendString("Task payload is empty or invalid")
+		}
+
+		// Convert to Protobuf Enums
+		difficulty := pb.Difficulty(payload.Difficulty)
+
+		// Map to Protobuf request
+		req := &pb.CreateTaskRequest{
+			Task: &pb.Task{
+				Title:       payload.Title,
+				Description: payload.Description,
+				Priority:    pb.Priority(payload.Priority),
+				Difficulty:  &difficulty,
+			},
+		}
+
+		resp, err := svc.Client.CreateTask(c.Context(), req)
+		if err != nil {
+			return c.Status(500).SendString("gRPC error: " + err.Error())
+		}
+
+		return c.JSON(resp)
 	}
 }

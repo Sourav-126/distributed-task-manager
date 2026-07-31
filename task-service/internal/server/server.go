@@ -3,39 +3,53 @@ package server
 import (
 	"context"
 	"errors"
+
+	repository "task_service/Repository"
 	pb "task_service/pb/task"
+
+	"github.com/google/uuid"
 )
 
 type TaskService struct {
+	pb.UnimplementedTaskServiceServer
+	repo repository.TaskRepository
 }
 
-func NewTaskService() *TaskService {
-	return &TaskService{}
+func NewTaskService(repo repository.TaskRepository) *TaskService {
+	return &TaskService{repo: repo}
 }
 
-func (s *TaskService) CreateTask(ctx context.Context, req *pb.CreateTaskRequest) (*pb.CreateTaskResponse, error) {
+func (s *TaskService) CreateTask(
+	ctx context.Context,
+	req *pb.CreateTaskRequest,
+) (*pb.CreateTaskResponse, error) {
+
 	task := req.GetTask()
+
 	if task == nil {
-		return nil, errors.New("Task is nil")
+		return nil, errors.New("task is nil")
 	}
+
 	if task.GetTitle() == "" {
-		return nil, errors.New("Title is Required")
-
+		return nil, errors.New("title is required")
 	}
+
 	if task.GetDescription() == "" {
-		return nil, errors.New("Description is Required")
+		return nil, errors.New("description is required")
 	}
-	if task.GetPriority().String() == "" {
-		return nil, errors.New("Priority is Required")
 
+	task.Id = uuid.New().String()
+
+	result, err := s.repo.Create(ctx, task)
+	if err != nil {
+		return nil, err
 	}
 
 	return &pb.CreateTaskResponse{
-		Respoose:&pb.Response{
+		Response: &pb.Response{
 			Success: true,
-			Message: "Task Created Successfully",
-		}
-		TaskId: task.id,
-	}
-
+			Message: result,
+		},
+		TaskId: task.Id,
+	}, nil
 }
