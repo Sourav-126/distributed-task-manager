@@ -1,0 +1,154 @@
+@import "tailwindcss";
+
+/* @theme is a Tailwind CSS v4 directive — IDE warning can be safely ignored */
+@theme {
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+  
+  --color-app-bg: var(--app-bg);
+  --color-app-surface: var(--app-surface);
+  --color-app-border: var(--app-border);
+  --color-app-text: var(--app-text);
+  --color-app-text-muted: var(--app-text-muted);
+}
+
+:root {
+  /* Brand: Blue and Dark Slate */
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --secondary: #0f172a;
+  --accent: #ea580c;
+
+  /* Status */
+  --success: #16a34a;
+  --warning: #ca8a04;
+  --danger: #dc2626;
+  --info: #2563eb;
+
+  /* Force light/white theme by default */
+  --app-bg: #ffffff;
+  --app-surface: #ffffff;
+  --app-border: #cbd5e1;
+  --app-text: #0f172a;
+  --app-text-muted: #64748b;
+
+  /* ── MetaOffice Game Canvas Palette (Gather.town Light Theme) ── */
+  --mo-bg:           #eaeae6;
+  --mo-surface:      #ffffff;
+  --mo-surface2:     #f8f9fa;
+  --mo-border:       #e2e8f0;
+  --mo-text:         #1e293b;
+  --mo-text-muted:   #64748b;
+  --mo-accent-blue:  #0284c7;
+  --mo-accent-green: #22c55e;
+  --mo-accent-purple:#a855f7;
+  --mo-accent-amber: #eab308;
+  --mo-accent-red:   #ef4444;
+  --mo-neon-blue:    #3b82f6;
+  --mo-neon-green:   #10b981;
+  --mo-aura-green:   rgba(34, 197, 94, 0.4);
+  --mo-aura-amber:   rgba(234, 179, 8, 0.4);
+  --mo-aura-red:     rgba(239, 68, 68, 0.4);
+  --mo-aura-blue:    rgba(59, 130, 246, 0.4);
+  --mo-room-floor:   #f1f5f9;
+  --mo-hallway:      #fafaf9;
+}
+
+/* Force light background on html and body across all screen sizes */
+html, body {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* MetaOffice game page overrides the body background */
+body.mo-game-mode {
+  background-color: #f8f9fa !important;
+  color: #1e293b !important;
+  overflow: hidden;
+}
+
+/* ═══════════════ ANIMATIONS ═══════════════ */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
+@keyframes auraPulse {
+  0%, 100% { transform: scale(1);    opacity: 0.7; }
+  50%       { transform: scale(1.18); opacity: 1;   }
+}
+.animate-aura-pulse {
+  animation: auraPulse 2s ease-in-out infinite;
+}
+
+@keyframes proximityPing {
+  0%   { transform: scale(0.85); opacity: 0; }
+  60%  { transform: scale(1.04); opacity: 1; }
+  100% { transform: scale(1);    opacity: 1; }
+}
+.animate-proximity-ping {
+  animation: proximityPing 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes floatCard {
+  0%, 100% { transform: translateY(0px);  }
+  50%       { transform: translateY(-4px); }
+}
+.animate-float-card {
+  animation: floatCard 3s ease-in-out infinite;
+}
+
+@keyframes scanline {
+  0%   { background-position: 0 0;    }
+  100% { background-position: 0 100%; }
+}
+
+@keyframes roomGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(88,166,255,0); }
+  50%       { box-shadow: 0 0 20px 4px rgba(88,166,255,0.15); }
+}
+.animate-room-glow {
+  animation: roomGlow 4s ease-in-out infinite;
+}
+
+@keyframes neonBlink {
+  0%, 95%, 100% { opacity: 1; }
+  97%            { opacity: 0.6; }
+}
+.animate-neon-blink {
+  animation: neonBlink 5s infinite;
+}
+
+@keyframes miniPlayerPop {
+  0%   { transform: scale(0) rotate(-10deg); opacity: 0; }
+  70%  { transform: scale(1.1) rotate(2deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg);   opacity: 1; }
+}
+.animate-player-pop {
+  animation: miniPlayerPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Styled placeholder for contenteditable elements */
+div[contenteditable]:empty::before {
+  content: attr(data-placeholder);
+  color: #94a3b8;
+  pointer-events: none;
+  display: block;
+}

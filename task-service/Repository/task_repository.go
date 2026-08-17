@@ -4,17 +4,33 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	pb "task_service/pb/task"
 
 	"gorm.io/gorm"
 )
 
+// TaskModel is the GORM DB model — kept separate from the protobuf struct
+type TaskModel struct {
+	ID          string `gorm:"primaryKey"`
+	Title       string `gorm:"not null"`
+	Description string `gorm:"not null"`
+	Priority    int32  `gorm:"not null"`
+	Difficulty  int32
+	OrgID       uint   `gorm:"not null;index"`
+	AssignedTo  uint   `gorm:"index"`           // user ID of the assignee
+	CreatedBy   uint   `gorm:"not null;index"`  // user ID of the creator
+	Deadline    string                           // ISO8601 string e.g. "2026-12-31"
+	Status      string `gorm:"default:'pending'"` // pending | in_progress | done
+}
+
+// TaskRepository defines the data access interface
 type TaskRepository interface {
-	Create(ctx context.Context, task *pb.Task) (string, error)
-	Update(ctx context.Context, task *pb.Task) (*pb.Task, error)
+	Create(ctx context.Context, task *TaskModel) (string, error)
+	Update(ctx context.Context, task *TaskModel) (*TaskModel, error)
 	Delete(ctx context.Context, id string) (string, error)
-	GetById(ctx context.Context, id string) (*pb.Task, error)
-	ListAll(ctx context.Context) ([]*pb.Task, error)
+	GetById(ctx context.Context, id string) (*TaskModel, error)
+	ListAll(ctx context.Context) ([]*TaskModel, error)
+	ListByAssignee(ctx context.Context, userID uint) ([]*TaskModel, error)
+	ListByOrg(ctx context.Context, orgID uint) ([]*TaskModel, error)
 }
 
 type taskRepository struct {
@@ -25,74 +41,75 @@ func NewTaskRepository(db *gorm.DB) TaskRepository {
 	return &taskRepository{db: db}
 }
 
-func (r *taskRepository) Create(ctx context.Context, task *pb.Task) (string, error) {
+func (r *taskRepository) Create(ctx context.Context, task *TaskModel) (string, error) {
 	err := r.db.WithContext(ctx).Create(task).Error
 	if err != nil {
 		return "", err
 	}
-	return task.Id, nil
+	return task.ID, nil
 }
 
-func (r *taskRepository) Update(ctx context.Context, pbTask *pb.Task) (*pb.Task, error) {
-
-	result := r.db.WithContext(ctx).Model(pbTask).Where("id = ?", pbTask.Id).Updates(pbTask)
-
-	// 3. Handle errors
+func (r *taskRepository) Update(ctx context.Context, task *TaskModel) (*TaskModel, error) {
+	result := r.db.WithContext(ctx).Model(task).Where("id = ?", task.ID).Updates(task)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-
-	// 4. Check if the record existed
 	if result.RowsAffected == 0 {
 		return nil, gorm.ErrRecordNotFound
 	}
-
-	// 5. Return the updated task (or re-fetch if needed)
-	return pbTask, nil
+	return task, nil
 }
 
-func (r *taskRepository) GetById(ctx context.Context, id string) (*pb.Task, error) {
-	task := r.db.WithContext(ctx).First(id)
-	if task.Error != nil {
-		if errors.Is(task.Error, gorm.ErrRecordNotFound) {
-			return nil, task.Error
+// Bug Fix 2: Use proper GORM First() with WHERE condition, scan into &TaskModel{}
+func (r *taskRepository) GetById(ctx context.Context, id string) (*TaskModel, error) {
+	var task TaskModel
+	err := r.db.WithContext(ctx).Where("id = ?", id).First(&task).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, fmt.Errorf("task with ID %s not found", id)
 		}
+		return nil, err
 	}
-	return &pb.Task{}, nil
+	return &task, nil
 }
 
 func (r *taskRepository) Delete(ctx context.Context, id string) (string, error) {
-	result := r.db.WithContext(ctx).Delete(pb.Task{}, "id = ?", id)
-
+	result := r.db.WithContext(ctx).Delete(&TaskModel{}, "id = ?", id)
 	if result.Error != nil {
 		return "", result.Error
 	}
-
 	if result.RowsAffected == 0 {
 		return "", fmt.Errorf("task with ID %s not found", id)
 	}
-
-	// Success
 	return id, nil
 }
-func (r *taskRepository) ListAll(ctx context.Context) ([]*pb.Task, error) {
 
-	err := r.db.WithContext(ctx).Find(&pb.Task{}).Error
+// Bug Fix 1: Find into a slice pointer so GORM actually populates it
+func (r *taskRepository) ListAll(ctx context.Context) ([]*TaskModel, error) {
+	var tasks []*TaskModel
+	err := r.db.WithContext(ctx).Find(&tasks).Error
 	if err != nil {
 		return nil, err
 	}
+	return tasks, nil
+}
 
-	// Convert GORM models to Protobuf models
-	var pbTasks []*pb.Task
-	for _, t := range pbTasks {
-		pbTasks = append(pbTasks, &pb.Task{
-			Id:          t.Id,
-			Title:       t.Title,
-			Description: t.Description,
-			Priority:    t.Priority,
-			Difficulty:  t.Difficulty,
-		})
+// ListByAssignee — employee view: only tasks assigned to them
+func (r *taskRepository) ListByAssignee(ctx context.Context, userID uint) ([]*TaskModel, error) {
+	var tasks []*TaskModel
+	err := r.db.WithContext(ctx).Where("assigned_to = ?", userID).Find(&tasks).Error
+	if err != nil {
+		return nil, err
 	}
+	return tasks, nil
+}
 
-	return pbTasks, nil
+// ListByOrg — manager/admin view: all tasks in the org
+func (r *taskRepository) ListByOrg(ctx context.Context, orgID uint) ([]*TaskModel, error) {
+	var tasks []*TaskModel
+	err := r.db.WithContext(ctx).Where("org_id = ?", orgID).Find(&tasks).Error
+	if err != nil {
+		return nil, err
+	}
+	return tasks, nil
 }

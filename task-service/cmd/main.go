@@ -17,14 +17,6 @@ import (
 	pb "task_service/pb/task"
 )
 
-type Task struct {
-	Id          string `gorm:"primaryKey"`
-	Title       string `gorm:"not null"`
-	Description string `gorm:"not null"`
-	Priority    int32  `gorm:"not null"`
-	Difficulty  int32
-}
-
 func loggingInterceptor(
 	ctx context.Context,
 	req interface{},
@@ -45,9 +37,8 @@ func loggingInterceptor(
 	return resp, err
 }
 
-
 func main() {
-	// Database connection
+	// Load environment variables
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -62,24 +53,20 @@ func main() {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 
-	// Migrate the schema
-	db.AutoMigrate(&Task{})
+	// Phase 2 — Migrate the proper TaskModel (not pb.Task directly)
+	db.AutoMigrate(&repository.TaskModel{})
 
-	// Initialize repository
+	// Initialize repository and service
 	taskRepo := repository.NewTaskRepository(db)
-
-	// Initialize gRPC service
 	taskService := server.NewTaskService(taskRepo)
 
-	// Create a new gRPC server with interceptor
+	// Create gRPC server with logging interceptor
 	grpcServer := grpc.NewServer(
 		grpc.UnaryInterceptor(loggingInterceptor),
 	)
 
-	// Register the task service
 	pb.RegisterTaskServiceServer(grpcServer, taskService)
 
-	// Listen on a port (e.g., 50051)
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "50051"
