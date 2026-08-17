@@ -1,0 +1,30 @@
+# Environments
+.env
+.env.*
+
+# Build and Dist
+dist/
+build/
+bin/
+tmp/
+*.exe
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Go specific
+vendor/
+go.work
+go.work.sum
+
+# Dependencies
+node_modules/
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+.DS_Store

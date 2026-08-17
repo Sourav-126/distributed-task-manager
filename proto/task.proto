@@ -10,7 +10,12 @@ service TaskService {
   rpc DeleteTask(DeleteTaskRequest) returns (DeleteTaskResponse);
   rpc CreateBulkTask(CreateBulkTaskRequest) returns (CreateBulkTaskResponse);
   rpc ListAllTasks(ListAllTasksRequest) returns (ListAllTasksResponse);
+  // Phase 2: scoped list methods
+  rpc ListMyTasks(ListMyTasksRequest) returns (ListMyTasksResponse);
+  rpc ListTeamTasks(ListTeamTasksRequest) returns (ListTeamTasksResponse);
 }
+
+// ──────────────────── Request / Response messages ────────────────────
 
 message CreateTaskRequest {
   Task task = 1;
@@ -30,7 +35,7 @@ message UpdateTaskResponse {
 }
 
 message GetTaskByIdRequest {
-  int32 taskID = 1;
+  string task_id = 1;  // changed to string (UUID)
 }
 
 message GetTaskByIdResponse {
@@ -38,15 +43,14 @@ message GetTaskByIdResponse {
 }
 
 message DeleteTaskRequest {
-  int32 taskID = 1;
+  string task_id = 1;  // changed to string (UUID)
 }
 
 message DeleteTaskResponse {
   Response resp = 1;
 }
 
-message ListAllTasksRequest {
-}
+message ListAllTasksRequest {}
 
 message ListAllTasksResponse {
   repeated Task tasks = 1;
@@ -61,29 +65,57 @@ message CreateBulkTaskResponse {
   int32 count = 2;
 }
 
+// Phase 2 — employee gets only their own tasks
+message ListMyTasksRequest {
+  uint64 user_id = 1;
+}
+
+message ListMyTasksResponse {
+  repeated Task tasks = 1;
+}
+
+// Phase 2 — manager gets all tasks in their org
+message ListTeamTasksRequest {
+  uint64 org_id = 1;
+}
+
+message ListTeamTasksResponse {
+  repeated Task tasks = 1;
+}
+
 message Response {
   bool success = 1;
   string message = 2;
 }
 
+// ──────────────────── Core Task message ────────────────────
+
 message Task {
-  string id = 1;
-  string title = 2;
+  string id          = 1;
+  string title       = 2;
   string description = 3;
-  Priority priority = 4;
+  Priority priority  = 4;
   optional Difficulty difficulty = 5;
+  // Phase 2 new fields
+  uint64 org_id      = 6;   // which organization this task belongs to
+  uint64 assigned_to = 7;   // user ID of the assignee (employee)
+  uint64 created_by  = 8;   // user ID of the creator (manager)
+  string deadline    = 9;   // ISO8601 date string e.g. "2026-12-31"
+  string status      = 10;  // "pending" | "in_progress" | "done"
 }
 
-enum Priority{
-    LOW=0;
-    MEDIUM=1;
-    HIGH=3;
+// ──────────────────── Enums ────────────────────
+
+enum Priority {
+  LOW    = 0;
+  MEDIUM = 1;
+  HIGH   = 3;
 }
 
-enum Difficulty{
-    NAHI_HAI_MUSHKIL=0;
-    LAG_TO_MUSHKIL_RHA_HAI=1;
-    MUSHKIL_HAI=2;
-    TUM_PE_NAHOGA=3;
-    HUM_NA_PATO=4;
+enum Difficulty {
+  NAHI_HAI_MUSHKIL       = 0;
+  LAG_TO_MUSHKIL_RHA_HAI = 1;
+  MUSHKIL_HAI            = 2;
+  TUM_PE_NAHOGA          = 3;
+  HUM_NA_PATO            = 4;
 }

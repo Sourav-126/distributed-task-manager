@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"fmt"
+	"os"
 	"session/utils"
 	"strings"
 
@@ -14,15 +15,24 @@ func Protected(rdb *redis.Client) fiber.Handler {
 	return func(c fiber.Ctx) error {
 
 		authHeader := c.Get("Authorization")
-		if authHeader == "" {
-			return c.Status(401).JSON(fiber.Map{"error": "Missing authorization header"})
+		tokenString := ""
+		if authHeader != "" {
+			tokenString = strings.TrimPrefix(authHeader, "Bearer ")
+		} else {
+			tokenString = c.Query("token")
 		}
 
-		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+		if tokenString == "" {
+			return c.Status(401).JSON(fiber.Map{"error": "Missing authorization token"})
+		}
 
 		token, err := jwt.ParseWithClaims(tokenString, &utils.CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
-			return []byte("password"), nil
-		})
+		secret := os.Getenv("JWT_SECRET")
+		if secret == "" {
+			secret = "change_me_in_production_use_a_long_random_string"
+		}
+		return []byte(secret), nil
+	})
 
 		if err != nil || !token.Valid {
 			return c.Status(401).JSON(fiber.Map{"error": "Invalid or expired token"})
@@ -46,7 +56,10 @@ func Protected(rdb *redis.Client) fiber.Handler {
 			return c.Status(401).JSON(fiber.Map{"error": "Session invalidated (e.g., password changed). Please login again."})
 		}
 
+		// Store identity context in Locals for downstream handlers
 		c.Locals("user_id", claims.UserID)
+		c.Locals("role", claims.Role)
+		c.Locals("org_id", claims.OrgID)
 
 		return c.Next()
 	}
