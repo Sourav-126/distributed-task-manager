@@ -118,8 +118,11 @@ func InviteUser(db *gorm.DB, rdb *redis.Client) fiber.Handler {
 			return c.Status(500).JSON(fiber.Map{"error": "Could not create user"})
 		}
 
-		redisKey := fmt.Sprintf("user_session:%d", newUser.ID)
-		rdb.Set(c.Context(), redisKey, sessionID, 24*time.Hour)
+		// Store session in Redis if available
+		if rdb != nil {
+			redisKey := fmt.Sprintf("user_session:%d", newUser.ID)
+			rdb.Set(c.Context(), redisKey, sessionID, 24*time.Hour)
+		}
 
 		return c.Status(201).JSON(fiber.Map{
 			"message": "User invited successfully",
@@ -198,9 +201,11 @@ func RemoveUser(db *gorm.DB, rdb *redis.Client) fiber.Handler {
 			"role_id": nil,
 		})
 
-		// Invalidate their session
-		redisKey := fmt.Sprintf("user_session:%d", target.ID)
-		rdb.Del(c.Context(), redisKey)
+		// Invalidate their session in Redis if available
+		if rdb != nil {
+			redisKey := fmt.Sprintf("user_session:%d", target.ID)
+			rdb.Del(c.Context(), redisKey)
+		}
 
 		// Regenerate a new session so their current token is invalidated
 		newSessionID := uuid.New().String()

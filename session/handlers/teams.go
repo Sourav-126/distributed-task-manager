@@ -255,8 +255,11 @@ func InviteToTeam(db *gorm.DB, rdb *redis.Client) fiber.Handler {
 			return c.Status(500).JSON(fiber.Map{"error": "Could not create user"})
 		}
 
-		redisKey := fmt.Sprintf("user_session:%d", newUser.ID)
-		rdb.Set(c.Context(), redisKey, sessionID, 24*time.Hour)
+		// Store session in Redis if available
+		if rdb != nil {
+			redisKey := fmt.Sprintf("user_session:%d", newUser.ID)
+			rdb.Set(c.Context(), redisKey, sessionID, 24*time.Hour)
+		}
 
 		return c.Status(201).JSON(fiber.Map{
 			"message": "Employee invited to your team",

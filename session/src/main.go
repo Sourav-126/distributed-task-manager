@@ -63,6 +63,12 @@ func main() {
 	DB := dbpkg.Connect()
 	redis := utils.ConnectRedis()
 
+	if redis != nil {
+		fmt.Println("Redis connection established")
+	} else {
+		fmt.Println("Running without Redis (session validation will be skipped)")
+	}
+
 	// 2. Initialize gRPC Client (with DB reference for notification persistence)
 	grpcClient, err := client.InitServiceClient("localhost:50051", DB)
 	if err != nil {

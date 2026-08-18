@@ -27,12 +27,12 @@ func Protected(rdb *redis.Client) fiber.Handler {
 		}
 
 		token, err := jwt.ParseWithClaims(tokenString, &utils.CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
-		secret := os.Getenv("JWT_SECRET")
-		if secret == "" {
-			secret = "change_me_in_production_use_a_long_random_string"
-		}
-		return []byte(secret), nil
-	})
+			secret := os.Getenv("JWT_SECRET")
+			if secret == "" {
+				secret = "change_me_in_production_use_a_long_random_string"
+			}
+			return []byte(secret), nil
+		})
 
 		if err != nil || !token.Valid {
 			return c.Status(401).JSON(fiber.Map{"error": "Invalid or expired token"})
@@ -43,17 +43,20 @@ func Protected(rdb *redis.Client) fiber.Handler {
 			return c.Status(401).JSON(fiber.Map{"error": "Invalid token claims"})
 		}
 
-		redisKey := fmt.Sprintf("user_session:%d", claims.UserID)
-		storedSessionID, err := rdb.Get(c.Context(), redisKey).Result()
+		// If Redis is not available, skip session validation
+		if rdb != nil {
+			redisKey := fmt.Sprintf("user_session:%d", claims.UserID)
+			storedSessionID, err := rdb.Get(c.Context(), redisKey).Result()
 
-		if err == redis.Nil {
-			return c.Status(401).JSON(fiber.Map{"error": "Session not found, please login again"})
-		} else if err != nil {
-			return c.Status(500).JSON(fiber.Map{"error": "Internal server error"})
-		}
+			if err == redis.Nil {
+				return c.Status(401).JSON(fiber.Map{"error": "Session not found, please login again"})
+			} else if err != nil {
+				return c.Status(500).JSON(fiber.Map{"error": "Internal server error"})
+			}
 
-		if claims.SessionID != storedSessionID {
-			return c.Status(401).JSON(fiber.Map{"error": "Session invalidated (e.g., password changed). Please login again."})
+			if claims.SessionID != storedSessionID {
+				return c.Status(401).JSON(fiber.Map{"error": "Session invalidated (e.g., password changed). Please login again."})
+			}
 		}
 
 		// Store identity context in Locals for downstream handlers
