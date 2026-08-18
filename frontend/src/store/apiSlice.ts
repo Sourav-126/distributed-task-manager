@@ -53,7 +53,7 @@ export interface CommentType {
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery,
-  tagTypes: ['Profile', 'Tasks', 'Comments', 'Notifications', 'Members'],
+  tagTypes: ['Profile', 'Tasks', 'Comments', 'Notifications', 'Members', 'Onboarding'],
   endpoints: (builder) => ({
     // Auth
     signin: builder.mutation({
@@ -150,7 +150,37 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['Notifications'],
     }),
-    
+
+    // Onboarding
+    getOnboardingStatus: builder.query<{
+      current_step: string;
+      is_complete: boolean;
+      desk_selection_id?: number;
+      should_set_desk: boolean;
+      desk_id_to_assign?: number;
+      desk_map_id_to_assign?: number;
+      name?: string;
+      outfit_template_id?: number;
+    }, void>({
+      query: () => '/api/onboarding/status',
+      providesTags: ['Onboarding'],
+    }),
+    updateOnboardingStep: builder.mutation<any, { step: string; data?: any }>({
+      query: (body) => ({
+        url: '/api/onboarding/step',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['Onboarding'],
+    }),
+    completeOnboarding: builder.mutation<any, void>({
+      query: () => ({
+        url: '/api/onboarding/complete',
+        method: 'POST',
+      }),
+      invalidatesTags: ['Onboarding'],
+    }),
+
     // Cloudinary
     getCloudinarySignature: builder.mutation<any, void>({
       query: () => ({
@@ -177,5 +207,9 @@ export const {
   useGetNotificationsQuery,
   useMarkAllNotificationsAsReadMutation,
   useMarkNotificationAsReadMutation,
+  useGetOnboardingStatusQuery,
+  useLazyGetOnboardingStatusQuery,
+  useUpdateOnboardingStepMutation,
+  useCompleteOnboardingMutation,
   useGetCloudinarySignatureMutation,
 } = apiSlice;

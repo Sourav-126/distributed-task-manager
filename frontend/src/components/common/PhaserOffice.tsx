@@ -478,17 +478,17 @@ export default function PhaserOffice({ token, isMini = false }: PhaserOfficeProp
           this.walls     = this.physics.add.staticGroup();
           this.furniture = this.physics.add.staticGroup();
 
-          // 1. Outdoor grass base
+          // 1. Outdoor grass base (dark)
           this.add.tileSprite(0, 0, WORLD_W, WORLD_H, 'floor_grass').setOrigin(0, 0).setDepth(0);
 
-          // 2. Indoor hall floor (between rooms) — tiled graphics grid
+          // 2. Indoor hall floor (between rooms) — dark slate tiled grid
           const hallRect = this.add.graphics();
-          hallRect.fillStyle(0xe8dcc8, 1);
+          hallRect.fillStyle(0x0d1117, 1);
           hallRect.fillRect(30, 30, WORLD_W - 60, WORLD_H - 100);
           hallRect.setDepth(1);
 
-          // Draw hallway grid lines
-          hallRect.lineStyle(0.5, 0xd4c8b0, 0.6);
+          // Draw hallway grid lines (dark subtle)
+          hallRect.lineStyle(0.5, 0x30363d, 0.4);
           const startX = 30;
           const endX = WORLD_W - 30;
           const startY = 30;
@@ -538,15 +538,15 @@ export default function PhaserOffice({ token, isMini = false }: PhaserOfficeProp
         private drawRoomFloor(x: number, y: number, w: number, h: number, floorKey: string) {
           const g = this.add.graphics().setDepth(3);
           const tileSize = 32;
-          
+
           if (floorKey === 'floor_checker') {
             for (let rx = 0; rx < w; rx += tileSize) {
               for (let ry = 0; ry < h; ry += tileSize) {
                 const isAlt = (Math.floor(rx / tileSize) + Math.floor(ry / tileSize)) % 2 === 1;
-                g.fillStyle(isAlt ? 0xe2e0dc : 0xf0eeea, 1);
+                g.fillStyle(isAlt ? 0x161b22 : 0x21262d, 1);
                 g.fillRect(x + rx, y + ry, Math.min(tileSize, w - rx), Math.min(tileSize, h - ry));
                 // grid border line
-                g.lineStyle(0.4, 0xd0ceca, 0.4);
+                g.lineStyle(0.4, 0x30363d, 0.3);
                 g.strokeRect(x + rx, y + ry, Math.min(tileSize, w - rx), Math.min(tileSize, h - ry));
               }
             }
@@ -554,9 +554,9 @@ export default function PhaserOffice({ token, isMini = false }: PhaserOfficeProp
             for (let rx = 0; rx < w; rx += tileSize) {
               for (let ry = 0; ry < h; ry += tileSize) {
                 const isAlt = (Math.floor(rx / tileSize) + Math.floor(ry / tileSize)) % 2 === 1;
-                g.fillStyle(isAlt ? 0x9fa8da : 0xc5cae9, 1);
+                g.fillStyle(isAlt ? 0x0d2a4a : 0x123a5e, 1);
                 g.fillRect(x + rx, y + ry, Math.min(tileSize, w - rx), Math.min(tileSize, h - ry));
-                g.lineStyle(0.4, 0x7986cb, 0.5);
+                g.lineStyle(0.4, 0x1f6feb, 0.3);
                 g.strokeRect(x + rx, y + ry, Math.min(tileSize, w - rx), Math.min(tileSize, h - ry));
               }
             }
@@ -564,9 +564,9 @@ export default function PhaserOffice({ token, isMini = false }: PhaserOfficeProp
             for (let rx = 0; rx < w; rx += tileSize) {
               for (let ry = 0; ry < h; ry += tileSize) {
                 const isAlt = (Math.floor(rx / tileSize) + Math.floor(ry / tileSize)) % 2 === 1;
-                g.fillStyle(isAlt ? 0xa5d6a7 : 0xc8e6c9, 1);
+                g.fillStyle(isAlt ? 0x0d2a1a : 0x123a1f, 1);
                 g.fillRect(x + rx, y + ry, Math.min(tileSize, w - rx), Math.min(tileSize, h - ry));
-                g.lineStyle(0.4, 0x81c784, 0.5);
+                g.lineStyle(0.4, 0x238636, 0.3);
                 g.strokeRect(x + rx, y + ry, Math.min(tileSize, w - rx), Math.min(tileSize, h - ry));
               }
             }
@@ -574,14 +574,14 @@ export default function PhaserOffice({ token, isMini = false }: PhaserOfficeProp
             for (let rx = 0; rx < w; rx += tileSize) {
               for (let ry = 0; ry < h; ry += tileSize) {
                 const isAlt = (Math.floor(rx / tileSize) + Math.floor(ry / tileSize)) % 2 === 1;
-                g.fillStyle(isAlt ? 0xffab91 : 0xffccbc, 1);
+                g.fillStyle(isAlt ? 0x3d1a10 : 0x4d2414, 1);
                 g.fillRect(x + rx, y + ry, Math.min(tileSize, w - rx), Math.min(tileSize, h - ry));
-                g.lineStyle(0.4, 0xff8a65, 0.5);
+                g.lineStyle(0.4, 0xbc4c00, 0.3);
                 g.strokeRect(x + rx, y + ry, Math.min(tileSize, w - rx), Math.min(tileSize, h - ry));
               }
             }
           } else {
-            g.fillStyle(0xf1f5f9, 1);
+            g.fillStyle(0x0d1117, 1);
             g.fillRect(x, y, w, h);
           }
         }
@@ -593,17 +593,17 @@ export default function PhaserOffice({ token, isMini = false }: PhaserOfficeProp
           // Floor tile
           this.drawRoomFloor(x, y, w, h, floorKey);
 
-          // Ambient room glow
+          // Ambient room glow (darker, subtler)
           const glow = this.add.graphics().setDepth(4);
-          glow.fillStyle(borderHex, 0.04);
+          glow.fillStyle(borderHex, 0.06);
           glow.fillRect(x, y, w, h);
 
-          // ── Thick pixel-art walls ──────────────────────────────────────
+          // ── Thick pixel-art walls (dark theme) ──────────────────────────────────────
           const wallG = this.add.graphics().setDepth(5);
           const W_T = 8; // wall thickness
 
-          // Wall colors (lighter face, darker top edge)
-          wallG.fillStyle(0x374151, 1);
+          // Wall colors (dark slate with colored highlight edge)
+          wallG.fillStyle(0x161b22, 1);
           wallG.fillRect(x, y, w, W_T);             // top
           wallG.fillRect(x, y, W_T, h);             // left
           wallG.fillRect(x + w - W_T, y, W_T, h);  // right
@@ -613,8 +613,8 @@ export default function PhaserOffice({ token, isMini = false }: PhaserOfficeProp
           wallG.fillRect(x, y + h - W_T, doorX - x, W_T);
           wallG.fillRect(doorX + doorW, y + h - W_T, (x + w) - (doorX + doorW), W_T);
 
-          // Wall highlight edge (bright top)
-          wallG.lineStyle(1.5, borderHex, 0.7);
+          // Wall highlight edge (bright colored top)
+          wallG.lineStyle(1.5, borderHex, 0.8);
           // top line
           wallG.lineBetween(x, y, x + w, y);
           // left
@@ -626,18 +626,22 @@ export default function PhaserOffice({ token, isMini = false }: PhaserOfficeProp
           // bottom-right
           wallG.lineBetween(doorX + doorW, y + h, x + w, y + h);
 
-          // ── Room label pill (light theme) ────────────────────────────────
+          // Door highlight
+          wallG.lineStyle(1, borderHex, 0.4);
+          wallG.lineBetween(doorX, y + h - W_T, doorX + doorW, y + h - W_T);
+
+          // ── Room label pill (dark theme) ────────────────────────────────
           const labelBg = this.add.graphics().setDepth(10);
           const textW   = name.length * 6.5 + 20;
-          labelBg.fillStyle(0xffffff, 0.95);
+          labelBg.fillStyle(0x0d1117, 0.95);
           labelBg.fillRoundedRect(x + w / 2 - textW / 2, y - 22, textW, 18, 9);
-          labelBg.lineStyle(1, 0xd1d5db, 0.9);
+          labelBg.lineStyle(1, borderHex, 0.5);
           labelBg.strokeRoundedRect(x + w / 2 - textW / 2, y - 22, textW, 18, 9);
           this.add.text(x + w / 2, y - 13, name, {
-            fontFamily: 'Inter, sans-serif',
+            fontFamily: 'DM Sans, Inter, sans-serif',
             fontSize: '10px',
             fontStyle: 'bold',
-            color: '#374151',
+            color: '#e6edf3',
           }).setOrigin(0.5, 0.5).setDepth(11);
 
           // ── Physics wall zones ─────────────────────────────────────────
@@ -654,7 +658,7 @@ export default function PhaserOffice({ token, isMini = false }: PhaserOfficeProp
           this.obstacleRects.push({ x1: cx - w / 2, y1: cy - h / 2, x2: cx + w / 2, y2: cy + h / 2 });
         }
 
-        // ── Outdoor trees & decor ────────────────────────────────────────
+        // ── Outdoor trees & decor (dark theme) ────────────────────────────────────────
         private addOutdoorDecor() {
           const positions = [
             [4, 4], [WORLD_W - 56, 4], [4, WORLD_H - 60], [WORLD_W - 56, WORLD_H - 60],
@@ -1345,7 +1349,7 @@ export default function PhaserOffice({ token, isMini = false }: PhaserOfficeProp
         parent: containerRef.current || undefined,
         width:  canvasW,
         height: canvasH,
-        backgroundColor: '#7ab648',  // bright outdoor green matching Gather.town grass
+        backgroundColor: '#0d1117',  // Gather dark theme
         physics: {
           default: 'arcade',
           arcade:  { gravity: { x: 0, y: 0 }, debug: false },

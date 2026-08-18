@@ -7,6 +7,7 @@ export interface ModalProps {
   title: string;
   children: React.ReactNode;
   footer?: React.ReactNode;
+  maxWidth?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -14,44 +15,52 @@ export const Modal: React.FC<ModalProps> = ({
   onClose,
   title,
   children,
-  footer
+  footer,
+  maxWidth = 'md',
 }) => {
   if (!isOpen) return null;
+
+  const maxWidthClass = {
+    sm: 'max-w-sm',
+    md: 'max-w-md',
+    lg: 'max-w-lg',
+    xl: 'max-w-xl',
+  }[maxWidth];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none focus:outline-none">
       {/* Backdrop */}
-      <div 
-        className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+      <div
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
       {/* Modal Dialog Box */}
-      <div className="relative w-auto my-6 mx-auto max-w-md w-full px-4 z-50 animate-fadeIn">
-        <div className="border-0 rounded-2xl shadow-xl relative flex flex-col w-full bg-white outline-none focus:outline-none border border-zinc-200">
-          
+      <div className={`relative w-auto my-6 mx-auto ${maxWidthClass} w-full px-4 z-50 animate-fadeIn`}>
+        <div className="border border-app-border rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] relative flex flex-col w-full bg-app-surface outline-none focus:outline-none">
+
           {/* Header */}
-          <div className="flex items-center justify-between p-5 border-b border-zinc-100 rounded-t">
-            <h3 className="text-base font-bold text-zinc-950">
+          <div className="flex items-center justify-between p-5 border-b border-app-border rounded-t">
+            <h3 className="text-base font-bold text-app-text">
               {title}
             </h3>
             <button
-              className="p-1 ml-auto bg-transparent border-0 text-zinc-400 hover:text-zinc-600 float-right text-xl leading-none font-bold outline-none focus:outline-none transition-colors"
+              className="p-1 ml-auto bg-transparent border-0 text-app-text-muted hover:text-app-text float-right text-xl leading-none font-bold outline-none focus:outline-none transition-colors"
               onClick={onClose}
               aria-label="Close modal"
             >
               &times;
             </button>
           </div>
-          
+
           {/* Body */}
-          <div className="relative p-6 flex-auto text-sm text-zinc-600 leading-relaxed">
+          <div className="relative p-6 flex-auto text-sm text-app-text-muted leading-relaxed">
             {children}
           </div>
-          
+
           {/* Footer */}
           {footer && (
-            <div className="flex items-center justify-end p-4 border-t border-zinc-100 rounded-b space-x-2 bg-zinc-50/50">
+            <div className="flex items-center justify-end p-4 border-t border-app-border rounded-b space-x-2 bg-app-bg/30">
               {footer}
             </div>
           )}

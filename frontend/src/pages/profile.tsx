@@ -34,16 +34,17 @@ export default function Profile() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="p-6">
-            <h2 className="text-lg font-semibold border-b border-app-border pb-4 mb-4">Account Details</h2>
+          <Card variant="default" className="p-6">
+            <h2 className="text-lg font-black border-b border-app-border pb-4 mb-4" style={{ color: '#e6edf3' }}>Account Details</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-app-text-muted mb-1">Email Address</label>
-                <div className="text-app-text font-medium">{user.email}</div>
+                <div className="text-app-text font-semibold">{user.email}</div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-app-text-muted mb-1">Role</label>
-                <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary uppercase">
+                <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black"
+                     style={{ background: 'rgba(88,166,255,0.15)', color: '#58a6ff', border: '1px solid rgba(88,166,255,0.2)' }}>
                   {user.role}
                 </div>
               </div>

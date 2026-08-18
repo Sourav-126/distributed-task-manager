@@ -68,29 +68,26 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
   const getEventBadgeClass = (type: string) => {
     switch (type) {
       case 'comment_mention':
-        return 'bg-purple-100 text-purple-700 border-purple-200';
+        return 'bg-purple-900/30 text-purple-300 border-purple-500/30';
       case 'task_assigned':
-        return 'bg-blue-100 text-blue-700 border-blue-200';
+        return 'bg-blue-900/30 text-blue-300 border-blue-500/30';
       case 'task_status_changed':
-        return 'bg-amber-100 text-amber-700 border-amber-200';
+        return 'bg-amber-900/30 text-amber-300 border-amber-500/30';
       case 'task_deleted':
       case 'removed_from_team':
-        return 'bg-red-100 text-red-700 border-red-200';
+        return 'bg-red-900/30 text-red-300 border-red-500/30';
       default:
-        return 'bg-gray-100 text-gray-700 border-gray-200';
+        return 'bg-app-border text-app-text-muted border-app-border/50';
     }
   };
 
   return (
     <div
       ref={panelRef}
-      className="fixed right-6 top-20 w-96 max-h-[500px] bg-white border border-app-border rounded-2xl shadow-2xl overflow-hidden flex flex-col z-50 animate-fadeIn"
-      style={{
-        boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
-      }}
+      className="fixed right-6 top-20 w-96 max-h-[500px] bg-app-surface border border-app-border rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col z-50 animate-fadeIn"
     >
       {/* Header */}
-      <div className="px-4 py-3.5 bg-gray-50 border-b border-app-border flex items-center justify-between">
+      <div className="px-4 py-3.5 bg-app-bg/50 border-b border-app-border flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <span className="font-extrabold text-sm text-app-text">Notifications</span>
           {unreadCount > 0 && (
@@ -121,16 +118,16 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
       {permission !== 'granted' && (
         <button
           onClick={requestPermission}
-          className="bg-primary/5 hover:bg-primary/10 border-b border-app-border px-4 py-2.5 text-left transition-colors flex items-center justify-between group"
+          className="bg-primary/10 hover:bg-primary/20 border-b border-app-border px-4 py-2.5 text-left transition-colors flex items-center justify-between group"
         >
           <div className="flex items-center space-x-2 min-w-0">
             <span className="text-base shrink-0">🔔</span>
             <div className="min-w-0">
               <p className="text-[10px] font-black text-primary">Enable desktop notifications</p>
-              <p className="text-[9px] text-gray-400 truncate">Never miss task updates or mentions</p>
+              <p className="text-[9px] text-app-text-muted/60 truncate">Never miss task updates or mentions</p>
             </div>
           </div>
-          <span className="text-[9px] font-bold text-primary bg-white border border-primary/20 px-2 py-0.5 rounded-lg group-hover:bg-primary group-hover:text-white transition-all shrink-0">
+          <span className="text-[9px] font-black text-primary bg-app-bg border border-primary/30 px-2 py-0.5 rounded-lg group-hover:bg-primary group-hover:text-app-bg transition-all shrink-0">
             Enable
           </span>
         </button>
@@ -141,8 +138,8 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
         {notifications.length === 0 ? (
           <div className="py-12 flex flex-col items-center justify-center text-center space-y-2">
             <span className="text-3xl">📭</span>
-            <p className="text-xs font-bold text-gray-500">Inbox is clean</p>
-            <p className="text-[10px] text-gray-400 max-w-[200px]">
+            <p className="text-xs font-bold text-app-text-muted">Inbox is clean</p>
+            <p className="text-[10px] text-app-text-muted/60 max-w-[200px]">
               You'll see real-time updates and task activity here.
             </p>
           </div>
@@ -151,7 +148,7 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
             <div
               key={n.id}
               onClick={() => markAsRead(n.id)}
-              className={`p-3.5 transition-colors cursor-pointer hover:bg-gray-50 flex items-start space-x-3 ${
+              className={`p-3.5 transition-colors cursor-pointer hover:bg-app-bg/30 flex items-start space-x-3 ${
                 !n.read ? 'bg-primary/5' : ''
               }`}
             >
@@ -167,14 +164,14 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
               {/* Message Details */}
               <div className="flex-1 min-w-0 space-y-1">
                 <div className="flex items-center justify-between">
-                  <p className="text-xs font-black text-gray-900 truncate pr-2">
+                  <p className="text-xs font-black text-app-text truncate pr-2">
                     {n.title}
                   </p>
                   {!n.read && (
                     <span className="w-2.5 h-2.5 bg-primary rounded-full shrink-0 animate-pulse" />
                   )}
                 </div>
-                <p className="text-[11px] text-gray-600 leading-normal line-clamp-2">
+                <p className="text-[11px] text-app-text-muted leading-normal line-clamp-2">
                   {n.body}
                 </p>
                 <div className="flex items-center justify-between pt-1">
@@ -188,7 +185,7 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
                   ) : (
                     <span />
                   )}
-                  <span className="text-[9px] text-gray-400 font-medium">
+                  <span className="text-[9px] text-app-text-muted/60 font-medium">
                     {new Date(n.created_at).toLocaleTimeString([], {
                       hour: '2-digit',
                       minute: '2-digit',

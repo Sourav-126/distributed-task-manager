@@ -25,27 +25,27 @@ export function generateAllTextures(scene: Phaser.Scene): void {
 // ─────────────────────────────── FLOORS ──────────────────────────────────────
 
 function generateFloors(scene: Phaser.Scene) {
-  // ──  Hallway — warm beige/cream, subtle tile grid ───────────────────────────
+  // ──  Hallway — dark slate, subtle tile grid (Gather dark) ───────────────────
   const hall = scene.make.graphics({ x: 0, y: 0 }, false);
-  hall.fillStyle(0xe8dcc8, 1);
+  hall.fillStyle(0x161b22, 1);
   hall.fillRect(0, 0, 48, 48);
-  hall.lineStyle(0.5, 0xd4c8b0, 0.6);
+  hall.lineStyle(0.5, 0x30363d, 0.4);
   hall.strokeRect(0, 0, 48, 48);
   hall.lineBetween(24, 0, 24, 48);
   hall.lineBetween(0, 24, 48, 24);
   hall.generateTexture('floor_hall', 48, 48);
   hall.destroy();
 
-  // ── Gray Checker — main office rooms (light gray checkerboard) ────────────
+  // ── Gray Checker — main office rooms (dark slate checkerboard) ────────────
   const ch = scene.make.graphics({ x: 0, y: 0 }, false);
-  ch.fillStyle(0xf0eeea, 1); // lighter warm squares
+  ch.fillStyle(0x161b22, 1); // base dark
   ch.fillRect(0, 0, 32, 32);
   ch.fillRect(32, 32, 32, 32);
-  ch.fillStyle(0xe2e0dc, 1); // slightly darker warm squares
+  ch.fillStyle(0x21262d, 1); // slightly lighter
   ch.fillRect(32, 0, 32, 32);
   ch.fillRect(0, 32, 32, 32);
   // Subtle grid lines
-  ch.lineStyle(0.4, 0xd0ceca, 0.4);
+  ch.lineStyle(0.4, 0x30363d, 0.3);
   ch.strokeRect(0, 0, 32, 32);
   ch.strokeRect(32, 0, 32, 32);
   ch.strokeRect(0, 32, 32, 32);
@@ -53,15 +53,15 @@ function generateFloors(scene: Phaser.Scene) {
   ch.generateTexture('floor_checker', 64, 64);
   ch.destroy();
 
-  // ── Blue Carpet — conference rooms (light periwinkle/blue) ─────────────────
+  // ── Blue Carpet — conference rooms (dark blue carpet) ─────────────────
   const bc = scene.make.graphics({ x: 0, y: 0 }, false);
-  bc.fillStyle(0xc5cae9, 1);
+  bc.fillStyle(0x0d2a4a, 1);
   bc.fillRect(0, 0, 32, 32);
   bc.fillRect(32, 32, 32, 32);
-  bc.fillStyle(0x9fa8da, 1);
+  bc.fillStyle(0x123a5e, 1);
   bc.fillRect(32, 0, 32, 32);
   bc.fillRect(0, 32, 32, 32);
-  bc.lineStyle(0.4, 0x7986cb, 0.5);
+  bc.lineStyle(0.4, 0x1f6feb, 0.3);
   bc.strokeRect(0, 0, 32, 32);
   bc.strokeRect(32, 0, 32, 32);
   bc.strokeRect(0, 32, 32, 32);
@@ -69,15 +69,15 @@ function generateFloors(scene: Phaser.Scene) {
   bc.generateTexture('floor_carpet_blue', 64, 64);
   bc.destroy();
 
-  // ── Green Carpet — break room (soft sage green) ───────────────────────────
+  // ── Green Carpet — break room (dark sage green carpet) ───────────────────
   const gc = scene.make.graphics({ x: 0, y: 0 }, false);
-  gc.fillStyle(0xc8e6c9, 1);
+  gc.fillStyle(0x0d2a1a, 1);
   gc.fillRect(0, 0, 32, 32);
   gc.fillRect(32, 32, 32, 32);
-  gc.fillStyle(0xa5d6a7, 1);
+  gc.fillStyle(0x123a1f, 1);
   gc.fillRect(32, 0, 32, 32);
   gc.fillRect(0, 32, 32, 32);
-  gc.lineStyle(0.4, 0x81c784, 0.5);
+  gc.lineStyle(0.4, 0x238636, 0.3);
   gc.strokeRect(0, 0, 32, 32);
   gc.strokeRect(32, 0, 32, 32);
   gc.strokeRect(0, 32, 32, 32);
@@ -85,15 +85,15 @@ function generateFloors(scene: Phaser.Scene) {
   gc.generateTexture('floor_carpet_green', 64, 64);
   gc.destroy();
 
-  // ── Warm Carpet — lounge (soft terracotta/orange) ──────────────────────────
+  // ── Warm Carpet — lounge (dark terracotta carpet) ──────────────────────────
   const wc = scene.make.graphics({ x: 0, y: 0 }, false);
-  wc.fillStyle(0xffccbc, 1);
+  wc.fillStyle(0x3d1a10, 1);
   wc.fillRect(0, 0, 32, 32);
   wc.fillRect(32, 32, 32, 32);
-  wc.fillStyle(0xffab91, 1);
+  wc.fillStyle(0x4d2414, 1);
   wc.fillRect(32, 0, 32, 32);
   wc.fillRect(0, 32, 32, 32);
-  wc.lineStyle(0.4, 0xff8a65, 0.5);
+  wc.lineStyle(0.4, 0xbc4c00, 0.3);
   wc.strokeRect(0, 0, 32, 32);
   wc.strokeRect(32, 0, 32, 32);
   wc.strokeRect(0, 32, 32, 32);
@@ -101,11 +101,11 @@ function generateFloors(scene: Phaser.Scene) {
   wc.generateTexture('floor_carpet_warm', 64, 64);
   wc.destroy();
 
-  // ── Outdoor Grass (bright pixel grass) ────────────────────────────────────
+  // ── Outdoor Grass (dark pixel grass) ────────────────────────────────────
   const gr = scene.make.graphics({ x: 0, y: 0 }, false);
-  gr.fillStyle(0x7ab648, 1);
+  gr.fillStyle(0x0d1117, 1);
   gr.fillRect(0, 0, 32, 32);
-  gr.fillStyle(0x6ca33f, 0.8);
+  gr.fillStyle(0x1a2a10, 0.6);
   for (let i = 0; i < 5; i++) {
     gr.fillRect(i * 6 + 1, 2, 2, 6);
     gr.fillRect(i * 6 + 3, 4, 1, 4);

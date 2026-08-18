@@ -68,12 +68,15 @@ export default function Signin() {
 
   return (
     <div className="w-full max-w-md px-4 py-8">
-      <Card className="relative bg-app-surface border-app-border shadow-2xl p-8 space-y-6">
+      <Card variant="elevated" className="relative border-app-border p-8 space-y-6">
         <div className="text-center space-y-2">
-          <div className="inline-flex h-12 w-12 rounded-2xl bg-primary items-center justify-center font-bold text-white text-xl shadow-lg mb-2">
+          <div
+            className="inline-flex h-14 w-14 rounded-2xl items-center justify-center font-black text-white text-2xl shadow-lg mb-2"
+            style={{ background: 'linear-gradient(135deg, #58a6ff, #a371f7)', boxShadow: '0 0 24px rgba(88,166,255,0.4)' }}
+          >
             M
           </div>
-          <h2 className="text-2xl font-bold tracking-tight text-app-text">
+          <h2 className="text-2xl font-black tracking-tight text-app-text">
             Welcome back
           </h2>
           <p className="text-sm text-app-text-muted">

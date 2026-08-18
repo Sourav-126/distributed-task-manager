@@ -55,8 +55,11 @@ func Signin(db *gorm.DB, rdb *redis.Client) fiber.Handler {
 			return c.Status(500).JSON(fiber.Map{"error": "Token error"})
 		}
 
-		redisKey := fmt.Sprintf("user_session:%d", user.ID)
-		rdb.Set(c.Context(), redisKey, user.SessionID, 24*time.Hour)
+		// Store session in Redis if available
+		if rdb != nil {
+			redisKey := fmt.Sprintf("user_session:%d", user.ID)
+			rdb.Set(c.Context(), redisKey, user.SessionID, 24*time.Hour)
+		}
 
 		return c.JSON(fiber.Map{
 			"message":      "Login successful",
@@ -106,10 +109,13 @@ func Signup(db *gorm.DB, rdb *redis.Client) fiber.Handler {
 			return c.Status(500).JSON(fiber.Map{"error": "Could not create user"})
 		}
 
-		redisKey := fmt.Sprintf("user_session:%d", newUser.ID)
-		err := rdb.Set(c.Context(), redisKey, newSessionID, 24*time.Hour).Err()
-		if err != nil {
-			fmt.Println("Redis Save Error:", err)
+		// Store session in Redis if available
+		if rdb != nil {
+			redisKey := fmt.Sprintf("user_session:%d", newUser.ID)
+			err := rdb.Set(c.Context(), redisKey, newSessionID, 24*time.Hour).Err()
+			if err != nil {
+				fmt.Println("Redis Save Error:", err)
+			}
 		}
 
 		return c.Status(201).JSON(fiber.Map{
@@ -146,8 +152,11 @@ func UpdatePassword(db *gorm.DB, rdb *redis.Client) fiber.Handler {
 			return c.Status(500).JSON(fiber.Map{"error": "Failed to update database"})
 		}
 
-		redisKey := fmt.Sprintf("user_session:%d", userID)
-		rdb.Set(c.Context(), redisKey, newSessionID, 24*time.Hour)
+		// Update session in Redis if available
+		if rdb != nil {
+			redisKey := fmt.Sprintf("user_session:%d", userID)
+			rdb.Set(c.Context(), redisKey, newSessionID, 24*time.Hour)
+		}
 
 		newToken, _ := utils.GenerateToken(userID, newSessionID, role, orgID)
 

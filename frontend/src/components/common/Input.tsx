@@ -28,9 +28,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({
         type={type}
         placeholder={placeholder}
         required={required}
-        className={`w-full px-3.5 py-2.5 bg-app-surface border ${
+        className={`w-full px-4 py-3 bg-app-bg border ${
           error ? 'border-danger focus:ring-danger/20' : 'border-app-border focus:ring-primary/20'
-        } rounded-lg text-sm text-app-text placeholder-app-text-muted/60 transition-all duration-200 focus:outline-none focus:ring-4 focus:border-primary`}
+        } rounded-xl text-sm text-app-text placeholder-app-text-muted/60 transition-all duration-200 focus:outline-none focus:ring-4 focus:border-primary hover:border-app-border/80`}
         {...props}
       />
       {error && (

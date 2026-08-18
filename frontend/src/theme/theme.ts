@@ -34,36 +34,36 @@ export interface AppTheme {
 
 export const colors: ColorPalette = {
   brand: {
-    primary: '#1d4ed8',       // Royal Blue
-    primaryHover: '#1e40af',  // Navy Blue
-    secondary: '#475569',    // Slate
-    accent: '#d97706',       // Amber
+    primary: '#58a6ff',       // Gather blue
+    primaryHover: '#79b8ff',
+    secondary: '#8b949e',     // Muted
+    accent: '#3fb950',        // Gather green
   },
   status: {
-    success: '#15803d',
-    warning: '#b45309',
-    danger: '#b91c1c',
-    info: '#0369a1',
+    success: '#3fb950',
+    warning: '#d29922',
+    danger: '#f85149',
+    info: '#58a6ff',
   },
   dark: {
-    bg: '#090d16',
-    surface: '#151f32',
-    border: '#1e293b',
-    textMuted: '#94a3b8',
-    textMain: '#f8fafc',
+    bg: '#0d1117',
+    surface: '#161b22',
+    border: '#30363d',
+    textMuted: '#8b949e',
+    textMain: '#e6edf3',
   },
   light: {
-    bg: '#f8fafc',
-    surface: '#ffffff',
-    border: '#cbd5e1',
-    textMuted: '#475569',
-    textMain: '#0f172a',
+    bg: '#0d1117',
+    surface: '#161b22',
+    border: '#30363d',
+    textMuted: '#8b949e',
+    textMain: '#e6edf3',
   }
 };
 
 export const theme: AppTheme = {
   colors,
-  fontFamily: 'Inter, system-ui, sans-serif',
+  fontFamily: 'DM Sans, Inter, system-ui, sans-serif',
 };
 
 export default theme;

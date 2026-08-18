@@ -36,16 +36,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ user, onLogoutClick }) => {
   return (
     <div className="flex h-[calc(100vh-4rem)] sticky top-16 select-none bg-app-bg">
       {/* LEVEL 1: Leftmost Icon Utility Bar */}
-      <div className="w-16 bg-secondary text-app-surface flex flex-col justify-between items-center py-4 border-r border-app-border">
+      <div className="w-16 bg-app-surface text-app-text flex flex-col justify-between items-center py-4 border-r border-app-border">
         {/* Top Icons group */}
         <div className="flex flex-col items-center space-y-6 w-full">
-          <div className="h-10 w-10 rounded-xl bg-primary/20 text-primary flex items-center justify-center font-bold text-lg shadow-md">
+          <div
+            className="h-10 w-10 rounded-xl flex items-center justify-center font-black text-white shadow-md"
+            style={{ background: 'linear-gradient(135deg, #58a6ff, #a371f7)' }}
+          >
             M
           </div>
 
-          <Button 
-            variant="white"
-            className="h-10 w-10 !p-0 flex items-center justify-center rounded-xl shadow-sm border border-app-border" 
+          <Button
+            variant="ghost"
+            className="h-10 w-10 !p-0 flex items-center justify-center rounded-xl hover:bg-primary/10 text-app-text-muted hover:text-primary"
             title="Dashboard"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -53,9 +56,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ user, onLogoutClick }) => {
             </svg>
           </Button>
 
-          <Button 
+          <Button
             variant="ghost"
-            className="h-10 w-10 !p-0 flex items-center justify-center rounded-xl hover:bg-primary/10 text-app-surface/60 hover:text-primary" 
+            className="h-10 w-10 !p-0 flex items-center justify-center rounded-xl hover:bg-primary/10 text-app-text-muted hover:text-primary"
             title="Notifications"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -66,7 +69,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ user, onLogoutClick }) => {
 
         {/* Bottom Settings group */}
         <div className="flex flex-col items-center space-y-4 w-full">
-          <div className="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shadow-sm">
+          <div
+            className="h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs shadow-sm"
+            style={{ background: 'linear-gradient(135deg, #3fb950, #238636)', color: '#0d1117' }}
+          >
             {user.email.charAt(0).toUpperCase()}
           </div>
         </div>
@@ -74,13 +80,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ user, onLogoutClick }) => {
 
       {/* LEVEL 2: Nested Sidebar Panel */}
       <div className="w-68 p-3 flex flex-col h-full bg-app-bg">
-        <div className="flex-1 bg-app-surface rounded-2xl border border-app-border shadow-sm flex flex-col p-4 space-y-5 overflow-y-auto">
+        <div className="flex-1 bg-app-surface rounded-2xl border border-app-border shadow-[0_0_30px_rgba(0,0,0,0.3)] flex flex-col p-4 space-y-5 overflow-y-auto">
           {/* Header */}
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold text-app-text truncate">
               {user.org_id ? `Organization ${user.org_id}` : 'MetaOffice'}
             </h2>
-            <span className="text-[10px] uppercase font-bold tracking-wider text-accent bg-accent/10 px-2 py-0.5 rounded">
+            <span className="text-[10px] uppercase font-black tracking-wider px-2 py-0.5 rounded"
+                  style={{ background: 'rgba(88,166,255,0.15)', color: '#58a6ff', border: '1px solid rgba(88,166,255,0.2)' }}>
               {user.role}
             </span>
           </div>
@@ -92,7 +99,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ user, onLogoutClick }) => {
               placeholder="Filter navigation"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-app-bg border border-transparent focus:border-app-border focus:bg-app-surface text-app-text text-xs px-3 py-2 rounded-lg focus:outline-none transition-all"
+              className="w-full bg-app-bg border border-app-border/50 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 text-app-text text-xs px-3 py-2 rounded-xl focus:outline-none transition-all"
             />
           </div>
 
@@ -105,13 +112,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ user, onLogoutClick }) => {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-150 ${
+                    className={`flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 ${
                       isActive
-                        ? 'bg-primary/10 text-primary border border-primary/20'
-                        : 'text-app-text-muted hover:bg-app-bg hover:text-app-text'
+                        ? 'bg-gradient-to-r from-primary/10 to-primary-hover/5 text-primary border border-primary/20'
+                        : 'text-app-text-muted hover:bg-app-bg hover:text-app-text hover:border-app-border/50 border border-transparent'
                     }`}
                   >
-                    <span className="text-base">{item.icon}</span>
+                    <span className="text-lg">{item.icon}</span>
                     <span>{item.name}</span>
                   </Link>
                 );
@@ -122,10 +129,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ user, onLogoutClick }) => {
             <div className="pt-4 border-t border-app-border space-y-3">
               <div className="flex items-center space-x-2.5 px-1">
                 <div className="relative">
-                  <div className="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">
+                  <div
+                    className="h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs"
+                    style={{ background: 'linear-gradient(135deg, #3fb950, #238636)', color: '#0d1117' }}
+                  >
                     {user.email.charAt(0).toUpperCase()}
                   </div>
-                  <span className="absolute bottom-0 right-0 h-2 w-2 bg-success rounded-full border border-app-surface" />
+                  <span className="absolute bottom-0 right-0 h-2 w-2 bg-success rounded-full border-2 border-app-surface" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[11px] font-bold text-app-text truncate">{user.email}</p>
